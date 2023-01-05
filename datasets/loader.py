@@ -6,8 +6,6 @@ from prefetch_generator import BackgroundGenerator
 import util
 
 import torchvision.datasets as torch_data
-from .time_series import uea as uea_data
-from .tabular import maf as maf_data
 
 
 def _gen_mini_dataset(dataset, dataset_ratio):
@@ -66,55 +64,6 @@ class TabularLoader:
         logp_diff_t1 = torch.zeros(x.shape[0], 1, device=x.device)
         return (x, logp_diff_t1), self.p_z0
 
-
-def get_uea_loader(opt):
-
-    print(util.magenta("loading uea data..."))
-
-    dataset_name = {
-        'CharT' :'CharacterTrajectories',
-        'ArtWR' : 'ArticularyWordRecognition',
-        'SpoAD' :     'SpokenArabicDigits',
-    }.get(opt.problem)
-
-    missing_rate = 0.0
-    device = opt.device
-    intensity_data = True
-
-    (times, train_dataloader, val_dataloader,
-     test_dataloader, num_classes, input_channels) = uea_data.get_data(dataset_name, missing_rate, device,
-                                                                           intensity=intensity_data,
-                                                                           batch_size=opt.batch_size)
-
-    # we'll return dataloader and store the rest in opt
-    opt.times = times
-    opt.output_dim = num_classes
-    opt.input_dim = input_channels
-    return train_dataloader, test_dataloader
-
-
-def get_tabular_loader(opt, test_batch_size=1000):
-    assert opt.problem in ['gas', 'miniboone']
-    print(util.magenta("loading tabular data..."))
-
-    data = maf_data.get_data(opt.problem)
-    data.trn.x = torch.from_numpy(data.trn.x)
-    data.val.x = torch.from_numpy(data.val.x)
-    data.tst.x = torch.from_numpy(data.tst.x)
-
-    if opt.dataset_ratio < 1.0:
-        data.trn.x = _gen_mini_dataset(data.trn.x, opt.dataset_ratio)
-        data.val.x = _gen_mini_dataset(data.val.x, opt.dataset_ratio)
-        data.tst.x = _gen_mini_dataset(data.tst.x, opt.dataset_ratio)
-
-    train_loader = TabularLoader(opt, data.trn.x, shuffle=True)
-    val_loader   = TabularLoader(opt, data.val.x, batch_size=test_batch_size, shuffle=False)
-    test_loader  = TabularLoader(opt, data.tst.x, batch_size=test_batch_size, shuffle=False)
-
-    opt.input_dim = train_loader.input_dim
-    opt.output_dim = train_loader.output_dim
-
-    return train_loader, test_loader
 
 
 def get_img_loader(opt, test_batch_size=1000):

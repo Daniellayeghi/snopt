@@ -19,4 +19,3 @@ dependencies:
     - prefetch_generator
     - colored-traceback
     - h5py
-    - sktime==0.4.0
