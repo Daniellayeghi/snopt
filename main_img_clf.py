@@ -13,6 +13,7 @@ import easydict
 from torch.optim import SGD, Adam
 from torchdiffeq import odeint_adjoint as odesolve
 from snopt import SNOpt, ODEFuncBase, ODEBlock
+from training_params.params import training_params
 
 import colored_traceback.always
 from ipdb import set_trace as debug
@@ -97,6 +98,9 @@ if __name__ == '__main__':
 
     # build opt and trainer
     opt = options.set()
+    training_params.device = opt.gpu
+    training_params.nsims = opt.batch_size
+    training_params.nepochs = opt.epoch
     train_loader, test_loader = get_img_loader(opt)
     network = build_clf_neural_ode(opt, t1=opt.t1)
     optim, precond = build_optim_and_precond(opt, network)

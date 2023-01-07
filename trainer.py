@@ -28,6 +28,8 @@ class TrainerBase(metaclass=abc.ABCMeta):
     def prepare_var(self, opt, batch):
         raise NotImplementedError
 
+    torch.cuda.device()
+
     def get_ode_t1(self):
         return self.network.ode.t1.item()
 

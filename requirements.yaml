@@ -10,7 +10,8 @@ dependencies:
   - termcolor
   - easydict
   - ipdb
-  - pytorch==1.8.1
+  - matplotlib
+  - pytorch==1.13
   - torchvision==0.9.1
   - scikit-learn
   - pandas

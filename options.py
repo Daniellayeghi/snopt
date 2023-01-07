@@ -38,7 +38,7 @@ def set():
 
     # torchdiffeq options
     parser.add_argument("--ode-solver",     type=str,   default='dopri5',   help='ODE solver for both forward & adjoint')
-    parser.add_argument("--ode-step-size",  type=float, default=0.05,       help="only for fixed grid ODE solver")
+    parser.add_argument("--ode-step-size",  type=float, default=0.01 ,       help="only for fixed grid ODE solver")
     parser.add_argument('--tol',            type=float, default=1e-3,       help="tolerance of ODE solver")
     parser.add_argument("--t1",             type=float, default=1.0,        help="integration horizon of Neural ODE")
     parser.add_argument("--seminorm",       action='store_true',            help="use semi-norm in Neural ODE")
